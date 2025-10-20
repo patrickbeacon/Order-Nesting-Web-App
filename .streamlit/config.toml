@@ -1,7 +1,9 @@
 
 [theme]
+base = "dark"
 primaryColor="#ff5100"              # your brand primary
 backgroundColor="#221f20"           # page background
 secondaryBackgroundColor="#2A2A2A"  # cards/containers
 textColor="#FFFEF6"                 # body text
 font="sans serif"                   # or "serif"/"monospace"
+codeBackgroundColor="#2A2A2A"
