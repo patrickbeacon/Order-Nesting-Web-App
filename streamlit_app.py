@@ -5,6 +5,7 @@ from datetime import datetime
 
 import streamlit as st
 import pathlib
+import os
 import pandas as pd
 import streamlit as st
 from reportlab.lib.pagesizes import letter
@@ -15,7 +16,11 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
-st.set_page_config(page_title="Beacon Lite Order Nest", layout="centered")
+st.set_page_config(
+    page_title="Beacon Lite Order Nest",
+    page_icon="assets/favicon.png",
+    layout="centered",
+)
 
 # Inject your custom CSS
 st.markdown(
