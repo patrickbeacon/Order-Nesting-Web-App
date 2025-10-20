@@ -24,17 +24,10 @@ st.set_page_config(
 
 
 # Inject your custom CSS
-st.alert(
+st.markdown(
     pathlib.Path("assets/branding.css").read_text(),
     unsafe_allow_html=True
 )
-
-st.alert("""
-<div style='background-color:#orange;padding:1rem;border-radius:12px;color:white'>
-  <h4>My Custom Card</h4>
-  <p>This section uses your brand color.</p>
-</div>
-""", unsafe_allow_html=True)
 
 st.title("Order Nest – PDF Generator")
 st.caption("Upload Sales Order + Production Plan CSVs, apply your rules, and download a styled PDF.")
