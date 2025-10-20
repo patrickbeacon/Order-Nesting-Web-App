@@ -1,0 +1,6 @@
+div[data-testid="column"] > div {
+  background-color: hsla(32, 100%, 50%, 0.317); /* Replace with your brand color */
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+}
