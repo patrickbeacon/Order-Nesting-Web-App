@@ -15,18 +15,18 @@ from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
 
 st.set_page_config(page_title="Order Nest", page_icon="🪺", layout="centered")
 
-st.title("🪺 Order Nest – PDF Generator")
-st.caption("Upload Sales + Beaconlite CSVs, apply your rules, and download a styled PDF.")
+st.title("Order Nest – PDF Generator")
+st.caption("Upload Sales Order + Production Plan CSVs, apply your rules, and download a styled PDF.")
 
 with st.expander("How it works"):
     st.markdown("""
-    1. **Upload** today's *Sales* CSV and *Beaconlite* CSV.
-    2. Choose which column is your Sales Order key, and which column is **Graphics Completed Date**.
+    1. **Upload** today's *Sales* CSV and *Production Plan* CSV.
+    2. Choose which column is your Sales Order Key, and which column is Order Print Status.
     3. Click **Generate PDF** to download a styled, grouped report.
     """)
 
 sales_file = st.file_uploader("Sales CSV", type=["csv"], key="sales")
-beacon_file = st.file_uploader("Beaconlite CSV", type=["csv"], key="beacon")
+beacon_file = st.file_uploader("Production Plan CSV", type=["csv"], key="beacon")
 
 def load_csv(uploaded):
     if uploaded is None:
