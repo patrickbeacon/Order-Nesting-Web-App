@@ -22,6 +22,12 @@ st.set_page_config(
     layout="centered",
 )
 
+# Load custom CSS
+def local_css(assets/branding.css):
+    with open(assets/branding.css) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("assets/branding.css")
 
 # Inject your custom CSS
 st.markdown(
