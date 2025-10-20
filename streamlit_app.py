@@ -1,4 +1,4 @@
-#Test comment
+
 import io
 import re
 from datetime import datetime
@@ -13,7 +13,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
-st.set_page_config(page_title="Order Nest", page_icon="🪺", layout="centered")
+st.set_page_config(page_title="Beacon Lite Order Nest", layout="centered")
 
 st.title("Order Nest – PDF Generator")
 st.caption("Upload Sales Order + Production Plan CSVs, apply your rules, and download a styled PDF.")
