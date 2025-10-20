@@ -1,6 +1,0 @@
-div[data-testid="st.alert"] > div {
-  background-color: #ff95007a; /* Replace with your brand color */
-  border-radius: 12px;
-  padding: 1rem;
-  color: white;
-}
