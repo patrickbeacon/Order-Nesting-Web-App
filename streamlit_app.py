@@ -13,12 +13,6 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
-primaryColor="#ff5100"              # your brand primary
-backgroundColor="#221f20"           # page background
-secondaryBackgroundColor="#2A2A2A"  # cards/containers
-textColor="#FFFEF6"                 # body text
-font="sans serif"                   # or "serif"/"monospace"
-
 st.set_page_config(page_title="Beacon Lite Order Nest", layout="centered")
 
 st.title("Order Nest – PDF Generator")
