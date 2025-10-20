@@ -62,7 +62,7 @@ with col1:
         sales_key_col = None
 
 with col2:
-    st.subheader("Beaconlite settings")
+    st.subheader("Production Plan settings")
     graphics_selector = None
     if beacon_df is not None:
         beacon_cols = list(beacon_df.columns)
@@ -74,7 +74,7 @@ with col2:
             graphics_by_name = st.selectbox("Pick column by name", options=beacon_cols, index=min(9, len(beacon_cols)-1))
             graphics_selector = graphics_by_name
     else:
-        st.info("Upload a Beaconlite CSV to choose the graphics-completed column.")
+        st.info("Upload a Production Plan CSV to choose the graphics-completed column.")
 
 st.divider()
 
