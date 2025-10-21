@@ -125,9 +125,14 @@ def find_group(row):
             return label
     return "__MISC__"
 
-filtered = filtered
-[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Base", case=False, na=False)).any(axis=1)]
+# ---------- Filter out completed ----------
+def is_blank(v):
+    return pd.isna(v) or str(v).strip() == ""
 
+filtered = merged[merged[graphics_completed_col].apply(is_blank)].copy()
+
+filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)).any(axis=1)]
+filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Base", case=False, na=False)).any(axis=1)]
 
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
