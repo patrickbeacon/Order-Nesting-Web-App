@@ -278,7 +278,7 @@ if run_clicked:
 
     merged = sales.merge(beacon[["__SO_KEY__", graphics_col]], on="__SO_KEY__", how="inner")
 
-    filtered = merged[merged[graphics_completed_col].apply(is_blank)].copy()
+    filtered = merged[merged[graphics_col].apply(is_blank)].copy()
 
     filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)).any(axis=1)]
 
