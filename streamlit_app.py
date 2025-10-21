@@ -118,7 +118,7 @@ def find_group(row):
     if "LEXAN" in text:
         return "__LEXAN__"
     if "GUIDEWAYS" in text:
-        return "__KIEWIT_GUIDEWAY__"
+        return "Kiewit Guideway"
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
             return label
