@@ -284,7 +284,7 @@ if run_clicked:
 
     filtered = merged[merged[graphics_completed_col].apply(is_blank)].copy()
 
-    filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)).any(axis=1)]
+    filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood_Post", case=False, na=False)).any(axis=1)]
 
     # Filter out completed
     keep = merged[graphics_col].apply(lambda v: pd.isna(v) or str(v).strip() == "")
