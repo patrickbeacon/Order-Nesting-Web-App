@@ -121,7 +121,7 @@ def find_group(row):
     if "GUIDEWAYS" in text:
         return "Kiewit Guideway"
     if "WOOD BASE" in text:
-        return ""
+        filtered
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
             return label
