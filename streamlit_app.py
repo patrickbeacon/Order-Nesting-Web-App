@@ -276,9 +276,13 @@ if run_clicked:
     sales["__SO_KEY__"] = sales[sales_key_col].astype(str).str.strip().str.upper()
     beacon["__SO_KEY__"] = beacon[beacon_first].astype(str).str.strip().str.upper()
 
+# After: beacon = pd.read_csv(...); beacon.columns = [c.strip() for c in beacon.columns]
+    first_col = beacon.columns[0]          # Sales Order code in Beaconlite
+    graphics_completed_col = beacon.columns[9]  # 10th column (0-based index 9)
+
     merged = sales.merge(beacon[["__SO_KEY__", graphics_col]], on="__SO_KEY__", how="inner")
 
-    filtered = merged[merged[graphics_col].apply(is_blank)].copy()
+    filtered = merged[merged[graphics_completed_col].apply(is_blank)].copy()
 
     filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)).any(axis=1)]
 
