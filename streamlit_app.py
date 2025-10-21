@@ -23,17 +23,10 @@ st.set_page_config(
 )
 
 # Inject your custom CSS
-def load_custom_css(file_name):
-    css_path = Path(file_name)
-    if css_path.exists():
-        st.markdown(
-            f"<style>{css_path.read_text()}</style>",
-            unsafe_allow_html=True
-        )
-    else:
-        st.warning(f"CSS file not found: {file_name}")
-
-load_custom_css("assets/branding.css")
+st.markdown(
+    pathlib.Path("assets/branding.css").read_text(),
+    unsafe_allow_html=True
+)
 
 st.title("Order Nest – PDF Generator")
 st.caption("Upload Sales Order + Production Plan CSVs, apply your rules, and download a styled PDF.")
