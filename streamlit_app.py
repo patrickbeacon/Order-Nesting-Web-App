@@ -105,10 +105,11 @@ def extract_text_fields(row):
 
 GRADE_PATTERNS = [
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY"),
-    ("DIAMOND GRADE REFLECTIVE", r"DIAMOND\s*GRADE"),
+    ("Diamond Grade Reflective", r"DIAMOND\s*GRADE"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
     ("Flat Wrap", r"FLAT\s*WRAP"),
+    ("Black Vinyl", r"TEMPORARY\s*STREET\s*SIGN"),
 ]
 
 def find_group(row):
