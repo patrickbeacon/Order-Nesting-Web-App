@@ -125,6 +125,10 @@ def find_group(row):
             return label
     return "__MISC__"
 
+filtered = filtered
+[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Base", case=False, na=False)).any(axis=1)]
+
+
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
         return ""
