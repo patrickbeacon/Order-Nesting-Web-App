@@ -1,0 +1,28 @@
+
+/* --- Customize st.alert backgrounds --- */
+
+/* Info alerts (st.info) */
+div[data-baseweb="notification"][class*="stAlert"] {
+  background-color: #1E3A8A !important;  /* your brand blue */
+  color: #F9FAFB !important;
+  border: 1px solid #2563EB !important;
+  border-radius: 8px !important;
+}
+
+/* Success alerts (st.success) */
+div[data-baseweb="notification"][class*="stAlert-success"] {
+  background-color: #065F46 !important;  /* your brand green */
+  color: #ECFDF5 !important;
+}
+
+/* Warning alerts (st.warning) */
+div[data-baseweb="notification"][class*="stAlert-warning"] {
+  background-color: #92400E !important;  /* your brand orange */
+  color: #FEF3C7 !important;
+}
+
+/* Error alerts (st.error) */
+div[data-baseweb="notification"][class*="stAlert-error"] {
+  background-color: #7F1D1D !important;  /* your brand red */
+  color: #FEE2E2 !important;
+}
