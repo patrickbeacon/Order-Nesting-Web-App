@@ -125,14 +125,6 @@ def find_group(row):
             return label
     return "__MISC__"
 
-def is_blank(v):
-    return pd.isna(v) or str(v).strip() == ""
-
-filtered = merged[merged[graphics_completed_col].apply(is_blank)].copy()
-
-filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)).any(axis=1)]
-filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Base", case=False, na=False)).any(axis=1)]
-
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
         return ""
@@ -284,10 +276,11 @@ if run_clicked:
     sales["__SO_KEY__"] = sales[sales_key_col].astype(str).str.strip().str.upper()
     beacon["__SO_KEY__"] = beacon[beacon_first].astype(str).str.strip().str.upper()
 
-    merged = sales.merge(
-        beacon[["__SO_KEY__", graphics_col]],
-        on="__SO_KEY__",
-        how="inner")
+    merged = sales.merge(beacon[["__SO_KEY__", graphics_col]], on="__SO_KEY__", how="inner")
+
+    filtered = merged[merged[graphics_completed_col].apply(is_blank)].copy()
+
+    filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)).any(axis=1)]
 
     # Filter out completed
     keep = merged[graphics_col].apply(lambda v: pd.isna(v) or str(v).strip() == "")
