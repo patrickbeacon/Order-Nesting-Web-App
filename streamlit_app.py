@@ -108,6 +108,7 @@ GRADE_PATTERNS = [
     ("DIAMOND GRADE REFLECTIVE", r"DIAMOND\s*GRADE"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
+    ("Flat Wrap", r"FLAT\s*WRAP"),
 ]
 
 def find_group(row):
@@ -116,6 +117,8 @@ def find_group(row):
         return "__ROLL_UP__"
     if "LEXAN" in text:
         return "__LEXAN__"
+    if "GUIDEWAYS" in text:
+        return "__KIEWIT_GUIDEWAY__"
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
             return label
