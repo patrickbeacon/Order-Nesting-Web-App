@@ -276,15 +276,45 @@ if run_clicked:
     sales["__SO_KEY__"] = sales[sales_key_col].astype(str).str.strip().str.upper()
     beacon["__SO_KEY__"] = beacon[beacon_first].astype(str).str.strip().str.upper()
 
-# After: beacon = pd.read_csv(...); beacon.columns = [c.strip() for c in beacon.columns]
-    first_col = beacon.columns[0]          # Sales Order code in Beaconlite
-    graphics_completed_col = beacon.columns[9]  # 10th column (0-based index 9)
+    gc_name = None
+    for c in beacon.columns:
+        u = str(c).upper()
+        if "GRAPHIC" in u and "COMP" in u:  # e.g. GRAPHICS COMPLETED DATE
+            gc_name = c
+            break
+    graphics_completed_col = gc_name if gc_name is not None else beacon.columns[9]  # 10th col fallback
 
-    merged = sales.merge(beacon[["__SO_KEY__", graphics_col]], on="__SO_KEY__", how="inner")
+    # Build beacon_data (data rows only)
+    first_col = beacon.columns[0]
+    beacon_data = beacon[beacon[first_col].apply(lambda x: pd.notna(x) and str(x).strip() != "")].copy()
 
-    filtered = merged[merged[graphics_completed_col].apply(is_blank)].copy()
+    # Normalize the graphics column NOW (strip whitespace / non-breaking spaces)
+    def _clean_cell(x):
+        if pd.isna(x):
+            return ""
+        s = str(x).replace("\u00A0", " ").strip()   # remove NBSP and trim
+        return "" if s.lower() in {"nan", "none"} else s
 
-    filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood_Post", case=False, na=False)).any(axis=1)]
+    beacon_data[graphics_completed_col] = beacon_data[graphics_completed_col].map(_clean_cell)
+
+    # Join
+    sales_key = "SalesOrder Number" if "SalesOrder Number" in sales.columns else sales.columns[0]
+    sales["SO_KEY"] = sales[sales_key].astype(str).str.strip().str.upper()
+    beacon_data["SO_KEY"] = beacon_data[first_col].astype(str).str.strip().str.upper()
+
+    merged = sales.merge(
+        beacon_data[["SO_KEY", graphics_completed_col]],
+        on="SO_KEY",
+        how="inner"
+    )
+
+    # Keep ONLY rows where graphics completed is truly blank
+    filtered = merged[merged[graphics_completed_col] == ""].copy()
+
+    # Also drop any “design fee” rows (any column, case-insensitive)
+    filtered = filtered[~filtered.apply(
+        lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)
+    ).any(axis=1)]
 
     # Filter out completed
     keep = merged[graphics_col].apply(lambda v: pd.isna(v) or str(v).strip() == "")
