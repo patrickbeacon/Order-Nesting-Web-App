@@ -267,7 +267,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         tbl.setStyle(ts)
 
         title_par = Paragraph(f"<para align='left'><b>{title}</b></para>",
-                              ParagraphStyle(name="GroupTitle", fontSize=15, leading=20, textColor=colors.white, alignment=TA_LEFT))
+                              ParagraphStyle(name="GroupTitle", fontSize=15, leading=19, textColor=colors.white, alignment=TA_LEFT))
         title_bar = Table([[title_par]], colWidths=[total_w], hAlign="CENTER")
         title_bar.setStyle(TableStyle([
             ("BACKGROUND", (0,0), (-1,-1), header_color(color_index)),
