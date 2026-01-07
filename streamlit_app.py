@@ -208,7 +208,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     PAGE_PRIORITY = [
         "Engineer Grade Reflective",
         "High Intensity Grade Reflective",
-        "DIAMOND GRADE REFLECTIVE",
+        "Diamond Grade Reflective",
         "Generic Vinyl",
         "Black Vinyl",
         "Flat Wrap",
@@ -217,6 +217,8 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         "__MISC__",
         "Blanks",
         "Freight",
+        "Warehouse",
+        "Additional Charges",
     ]
 
     def parse_due(d):
