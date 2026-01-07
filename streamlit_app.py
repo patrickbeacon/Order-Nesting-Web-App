@@ -144,6 +144,12 @@ def find_group(row):
             return label
     return "__MISC__"
 
+EXCLUDED_PAGES = {
+    "Warehouse",
+    "Additional Charges",
+    "Blanks",
+}
+
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
         return ""
@@ -226,7 +232,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         "Warehouse",
         "Additional Charges",
     ]
-
+    
     def parse_due(d):
         try:
             return datetime.strptime(d, "%m/%d/%y")
