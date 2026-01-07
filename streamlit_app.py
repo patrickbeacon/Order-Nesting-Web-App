@@ -130,7 +130,7 @@ def find_group(row):
     if "STEEL STRAP" in text:
         return "Warehouse"
     if "BRACKET" in text:
-        return "Warehouse"
+        del "Bracket"
     if "FREIGHT" in text:
         return "Additional Charges"
     if "DESIGN FEE" in text:
@@ -378,14 +378,3 @@ if run_clicked:
     file_name=output_filename,
     mime="application/pdf"
 )
-for g in ordered_groups:
-    if g in EXCLUDED_PAGES:
-        continue  # skip this page entirely
-
-    group_df = display_df[display_df["Group"] == g]
-    if group_df.empty:
-        continue
-
-    elements.extend(make_table(g, group_df, color_idx))
-    elements.append(PageBreak())
-    color_idx += 1
