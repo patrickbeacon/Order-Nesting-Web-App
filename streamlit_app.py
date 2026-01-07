@@ -234,14 +234,14 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         "Warehouse",
         "Additional Charges",
     ]
-
+    
     def parse_due(d):
         try:
             return datetime.strptime(d, "%m/%d/%y")
         except Exception:
             return datetime.max
 
-    # Earliest due date per group
+    # earliest due date per group (used as a secondary sort)
     group_min_due = {}
     for g, df in display_df.groupby("Group"):
         if "Due Date" in df.columns and not df.empty:
@@ -250,26 +250,6 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
             group_min_due[g] = datetime.max
 
     priority_rank = {g: i for i, g in enumerate(PAGE_PRIORITY)}
-
-    def group_sort_key(g):
-        return (
-            priority_rank.get(g, 999),          # priority first
-            group_min_due.get(g, datetime.max), # then earliest due date
-            str(g)                              # stable fallback
-        )
-
-    ordered_groups = sorted(display_df["Group"].unique(), key=group_sort_key)
-
-    for g in ordered_groups:
-        if g in EXCLUDED_PAGES:
-            continue
-
-        df = display_df[display_df["Group"] == g]
-        if df.empty:
-            continue
-
-        elements.extend(make_table(g, df, color_idx))
-        elements.append(PageBreak())
 
     def group_sort_key(g):
         # primary: priority rank (lower = earlier)
