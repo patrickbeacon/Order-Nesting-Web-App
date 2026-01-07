@@ -150,18 +150,6 @@ EXCLUDED_PAGES = {
     "Blanks",
 }
 
-for g in ordered_groups:
-    if g in EXCLUDED_PAGES:
-        continue  # skip this page entirely
-
-    group_df = display_df[display_df["Group"] == g]
-    if group_df.empty:
-        continue
-
-    elements.extend(make_table(g, group_df, color_idx))
-    elements.append(PageBreak())
-    color_idx += 1
-
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
         return ""
@@ -389,4 +377,16 @@ if run_clicked:
     data=pdf_buf,
     file_name=output_filename,
     mime="application/pdf"
+    
+    for g in ordered_groups:
+    if g in EXCLUDED_PAGES:
+        continue  # skip this page entirely
+
+    group_df = display_df[display_df["Group"] == g]
+    if group_df.empty:
+        continue
+
+    elements.extend(make_table(g, group_df, color_idx))
+    elements.append(PageBreak())
+    color_idx += 1
 )
