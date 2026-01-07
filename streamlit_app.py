@@ -107,7 +107,7 @@ def extract_text_fields(row):
     return " || ".join(parts).upper()
 
 GRADE_PATTERNS = [
-    ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY"),
+    ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY|HIP"),
     ("Diamond Grade Reflective", r"DIAMOND\s*GRADE"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
@@ -129,10 +129,16 @@ def find_group(row):
         return "Warehouse"
     if "STEEL STRAP" in text:
         return "Warehouse"
+    if "BRACKET" in text:
+        return "Warehouse"
     if "FREIGHT" in text:
         return "Additional Charges"
     if "DESIGN FEE" in text:
         return "Additional Charges"
+    if "COROPLAST" in text:
+        return "Generic Vinyl"
+    if "VINYL DECALS" in text:
+        return "Black Vinyl"
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
             return label
