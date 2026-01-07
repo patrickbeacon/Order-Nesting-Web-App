@@ -165,12 +165,12 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     elements.append(Paragraph(datetime.now().strftime("%B %d, %Y"), styles["Subtle"]))
     elements.append(PageBreak())
 
-    vibrant = ["#074CE0","#008A7F","#DB0808","#7C3AED","#EA580C","#00A6FF","#D946EF","#15AF4D"]
+    vibrant = ["#2369FF","#008A7F","#DB0808","#7C3AED","#EA580C","#00A6FF","#D946EF","#15AF4D"]
     def header_color(i): return colors.HexColor(vibrant[i % len(vibrant)])
 
     default_widths = {
-        "Sales Order": 1.0*inch,
-        "Quote Number": 1.0*inch,
+        "Sales Order": 0.9*inch,
+        "Quote Number": 1.1*inch,
         "Client": 1.2*inch,
         "Item": 1.8*inch,
         "Info": 1.8*inch,
