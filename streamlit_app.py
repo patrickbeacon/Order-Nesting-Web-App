@@ -150,6 +150,18 @@ EXCLUDED_PAGES = {
     "Blanks",
 }
 
+for g in ordered_groups:
+    if g in EXCLUDED_PAGES:
+        continue  # skip this page entirely
+
+    group_df = display_df[display_df["Group"] == g]
+    if group_df.empty:
+        continue
+
+    elements.extend(make_table(g, group_df, color_idx))
+    elements.append(PageBreak())
+    color_idx += 1
+
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
         return ""
@@ -323,18 +335,6 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     return buf
 
 run_clicked = st.button("Generate PDF", type="primary", disabled=(sales_df is None or beacon_df is None or sales_key_col is None or graphics_selector is None))
-
-for g in ordered_groups:
-    if g in EXCLUDED_PAGES:
-        continue  # skip this page entirely
-
-    group_df = display_df[display_df["Group"] == g]
-    if group_df.empty:
-        continue
-
-    elements.extend(make_table(g, group_df, color_idx))
-    elements.append(PageBreak())
-    color_idx += 1
 
 if run_clicked:
     # Build normalized keys
