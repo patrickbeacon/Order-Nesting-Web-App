@@ -16,6 +16,9 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
+today_str = datetime.now().strftime("%m-%d-%Y")
+output_filename = f"Order Nest - {today_str}.pdf"
+
 st.set_page_config(
     page_title="Beacon Lite Order Nest",
     page_icon="assets/favicon.png",
@@ -162,15 +165,15 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     elements.append(Paragraph(datetime.now().strftime("%B %d, %Y"), styles["Subtle"]))
     elements.append(PageBreak())
 
-    vibrant = ["#2563EB","#059669","#DC2626","#7C3AED","#EA580C","#0EA5E9","#D946EF","#16A34A"]
+    vibrant = ["#074CE0","#008A7F","#DB0808","#7C3AED","#EA580C","#00A6FF","#D946EF","#15AF4D"]
     def header_color(i): return colors.HexColor(vibrant[i % len(vibrant)])
 
     default_widths = {
-        "Sales Order": 0.9*inch,
-        "Quote Number": 0.9*inch,
+        "Sales Order": 1.0*inch,
+        "Quote Number": 1.0*inch,
         "Client": 1.2*inch,
-        "Item": 1.9*inch,
-        "Info": 1.9*inch,
+        "Item": 1.8*inch,
+        "Info": 1.8*inch,
         "Quantity": 0.7*inch,
         "Due Date": 0.7*inch,
     }
@@ -349,4 +352,9 @@ if run_clicked:
     # Build and provide download
     pdf_buf = build_pdf(filtered, present_headers)
     st.success("Done! Download your PDF below.")
-    st.download_button("Download Order Nest PDF", data=pdf_buf, file_name="Order_Nest_Today.pdf", mime="application/pdf")
+    st.download_button(
+    "Download Order Nest PDF",
+    data=pdf_buf,
+    file_name=output_filename,
+    mime="application/pdf"
+)
