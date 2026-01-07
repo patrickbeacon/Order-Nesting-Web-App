@@ -125,7 +125,13 @@ def find_group(row):
         return "Kiewit Guideway"
     if "SIGN BLANK" in text:
         return "Blanks"
+    if "U-CHANNEL" in text:
+        return "Warehouse"
+    if "STEEL STRAP" in text:
+        return "Warehouse"
     if "FREIGHT" in text:
+        return "Additional Charges"
+    if "DESIGN FEE" in text:
         return "Additional Charges"
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
