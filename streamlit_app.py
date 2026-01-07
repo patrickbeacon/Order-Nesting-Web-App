@@ -130,7 +130,7 @@ def find_group(row):
     if "STEEL STRAP" in text:
         return "Warehouse"
     if "BRACKET" in text:
-        del "Bracket"
+        return "Warehouse"
     if "FREIGHT" in text:
         return "Additional Charges"
     if "DESIGN FEE" in text:
@@ -149,6 +149,18 @@ EXCLUDED_PAGES = {
     "Additional Charges",
     "Blanks",
 }
+
+for g in ordered_groups:
+    if g in EXCLUDED_PAGES:
+        continue
+
+    df = display_df[display_df["Group"] == g]
+    if df.empty:
+        continue
+
+    elements.extend(make_table(title=g, df=df, color_index=color_idx))
+    elements.append(PageBreak())
+    color_idx += 1
 
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
