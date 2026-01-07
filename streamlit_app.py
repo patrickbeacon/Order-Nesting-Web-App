@@ -358,6 +358,18 @@ if run_clicked:
     # Grouping
     filtered["Group"] = filtered.apply(find_group, axis=1)
 
+for g in ordered_groups:
+    if g in EXCLUDED_PAGES:
+        continue  # skip this page entirely
+
+    group_df = display_df[display_df["Group"] == g]
+    if group_df.empty:
+        continue
+
+    elements.extend(make_table(g, group_df, color_idx))
+    elements.append(PageBreak())
+    color_idx += 1
+
     # Prepare display columns
     preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date"]
     filtered = filtered.rename(columns={sales_key_col: "Sales Order"})
