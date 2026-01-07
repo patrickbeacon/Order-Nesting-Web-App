@@ -196,6 +196,20 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
 
     group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__MISC__":"Miscellaneous"}
 
+    PAGE_PRIORITY = [
+        "Engineer Grade Reflective",
+        "High Intensity Grade Reflective",
+        "DIAMOND GRADE REFLECTIVE",
+        "Generic Vinyl",
+        "Black Vinyl",
+        "Flat Wrap",
+        "__ROLL_UP__",
+        "__LEXAN__",
+        "__MISC__",
+        "Blanks",
+        "Freight",
+]
+
     def make_table(title, df, color_index):
         df = df.copy()
         df["__sort__"] = [sort_key(r) for r in df.to_dict("records")]
