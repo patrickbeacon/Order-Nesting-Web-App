@@ -150,18 +150,6 @@ EXCLUDED_PAGES = {
     "Blanks",
 }
 
-for g in ordered_groups:
-    if g in EXCLUDED_PAGES:
-        continue
-
-    df = display_df[display_df["Group"] == g]
-    if df.empty:
-        continue
-
-    elements.extend(make_table(title=g, df=df, color_index=color_idx))
-    elements.append(PageBreak())
-    color_idx += 1
-
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
         return ""
@@ -229,6 +217,8 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
 
     group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__MISC__":"Miscellaneous"}
 
+    ordered_groups = list(display_df["Group"].unique())
+
     PAGE_PRIORITY = [
         "Engineer Grade Reflective",
         "High Intensity Grade Reflective",
@@ -244,6 +234,31 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         "Warehouse",
         "Additional Charges",
     ]
+
+    def parse_due(d):
+        try:
+            return datetime.strptime(d, "%m/%d/%y")
+        except Exception:
+            return datetime.max
+
+    # Earliest due date per group
+    group_min_due = {}
+    for g, df in display_df.groupby("Group"):
+        if "Due Date" in df.columns and not df.empty:
+            group_min_due[g] = df["Due Date"].apply(parse_due).min()
+        else:
+            group_min_due[g] = datetime.max
+
+    priority_rank = {g: i for i, g in enumerate(PAGE_PRIORITY)}
+
+    def group_sort_key(g):
+        return (
+            priority_rank.get(g, 999),          # priority first
+            group_min_due.get(g, datetime.max), # then earliest due date
+            str(g)                              # stable fallback
+        )
+
+    ordered_groups = sorted(display_df["Group"].unique(), key=group_sort_key)
     
     def parse_due(d):
         try:
