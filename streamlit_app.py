@@ -377,8 +377,8 @@ if run_clicked:
     data=pdf_buf,
     file_name=output_filename,
     mime="application/pdf"
-    
-    for g in ordered_groups:
+)
+for g in ordered_groups:
     if g in EXCLUDED_PAGES:
         continue  # skip this page entirely
 
@@ -389,4 +389,3 @@ if run_clicked:
     elements.extend(make_table(g, group_df, color_idx))
     elements.append(PageBreak())
     color_idx += 1
-)
