@@ -363,13 +363,8 @@ if run_clicked:
     # Prepare display columns
     preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date","Stock"]
     filtered = filtered.rename(columns={sales_key_col: "Sales Order"})
+    filtered["Stock"] = ""
     present_headers = [h for h in preferred_headers if h in filtered.columns]
-
-    display_df = filtered.copy()
-
-    display_df["Stock"] = display_df["Item"].apply(
-    lambda x: "Aluminum" if "ALUM" in str(x).upper() else "Vinyl"
-    )
 
     for col in present_headers:
         if col == "Due Date":
