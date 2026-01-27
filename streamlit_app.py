@@ -125,8 +125,6 @@ def find_group(row):
         return "Kiewit Guideway"
     if "SIGN BLANK" in text:
         return "Blanks"
-    if "U-CHANNEL" in text:
-        return "Warehouse"
     if "STEEL STRAP" in text:
         return "Warehouse"
     if "BRACKET" in text:
@@ -190,10 +188,11 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         "Sales Order": 0.9*inch,
         "Quote Number": 1.1*inch,
         "Client": 1.2*inch,
-        "Item": 1.8*inch,
+        "Item": 1.6*inch,
         "Info": 1.8*inch,
-        "Quantity": 0.7*inch,
-        "Due Date": 0.7*inch,
+        "Quantity": 0.5*inch,
+        "Due Date": 0.6*inch,
+        "Stock": 0.5*inch,
     }
     col_widths = [default_widths.get(h, 0.9*inch) for h in present_headers]
     total_w = sum(col_widths)
