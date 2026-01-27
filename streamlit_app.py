@@ -188,10 +188,10 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         "Sales Order": 0.9*inch,
         "Quote Number": 1.1*inch,
         "Client": 1.2*inch,
-        "Item": 1.6*inch,
+        "Item": 1.3*inch,
         "Info": 1.8*inch,
-        "Quantity": 0.5*inch,
-        "Due Date": 0.6*inch,
+        "Quantity": 0.7*inch,
+        "Due Date": 0.7*inch,
         "Stock": 0.5*inch,
     }
     col_widths = [default_widths.get(h, 0.9*inch) for h in present_headers]
@@ -359,8 +359,12 @@ if run_clicked:
     # Grouping
     filtered["Group"] = filtered.apply(find_group, axis=1)
 
+    display_df["Stock"] = display_df["Item"].apply(
+        lambda x: "Aluminum" if "ALUM" in str(x).upper() else "Vinyl"
+    )
+
     # Prepare display columns
-    preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date"]
+    preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date", "Stock"]
     filtered = filtered.rename(columns={sales_key_col: "Sales Order"})
     present_headers = [h for h in preferred_headers if h in filtered.columns]
 
