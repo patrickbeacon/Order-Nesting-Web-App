@@ -94,6 +94,7 @@ with col2:
 
 st.divider()
 
+
 def is_blank(val):
     if pd.isna(val):
         return True
@@ -161,10 +162,6 @@ def clean_val(v):
         return ""
     s = str(v)
     return "" if s.lower()=="nan" else s
-
-display_df["Stock"] = display_df["Item"].apply(
-   lambda x: "Aluminum" if "ALUM" in str(x).upper() else "Vinyl"
-)
 
 def build_pdf(display_df: pd.DataFrame, present_headers):
     buf = io.BytesIO()
@@ -367,6 +364,12 @@ if run_clicked:
     preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date","Stock"]
     filtered = filtered.rename(columns={sales_key_col: "Sales Order"})
     present_headers = [h for h in preferred_headers if h in filtered.columns]
+
+    display_df = filtered.copy()
+
+    display_df["Stock"] = display_df["Item"].apply(
+    lambda x: "Aluminum" if "ALUM" in str(x).upper() else "Vinyl"
+    )
 
     for col in present_headers:
         if col == "Due Date":
