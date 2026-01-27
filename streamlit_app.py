@@ -162,6 +162,10 @@ def clean_val(v):
     s = str(v)
     return "" if s.lower()=="nan" else s
 
+display_df["Stock"] = display_df["Item"].apply(
+   lambda x: "Aluminum" if "ALUM" in str(x).upper() else "Vinyl"
+)
+
 def build_pdf(display_df: pd.DataFrame, present_headers):
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
@@ -359,12 +363,8 @@ if run_clicked:
     # Grouping
     filtered["Group"] = filtered.apply(find_group, axis=1)
 
-    display_df["Stock"] = display_df["Item"].apply(
-        lambda x: "Aluminum" if "ALUM" in str(x).upper() else "Vinyl"
-    )
-
     # Prepare display columns
-    preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date", "Stock"]
+    preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date","Stock"]
     filtered = filtered.rename(columns={sales_key_col: "Sales Order"})
     present_headers = [h for h in preferred_headers if h in filtered.columns]
 
