@@ -221,15 +221,6 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     if "__MISC__" in ordered_groups:
         ordered_groups = [g for g in ordered_groups if g != "__MISC__"] + ["__MISC__"]
 
-    # Groups that actually exist in the data
-    groups_in_data = display_df["Group"].unique().tolist()
-
-    # Keep only groups that exist, in the order you defined
-    ordered_groups = [g for g in PAGE_ORDER if g in groups_in_data]
-
-    # Append any unexpected groups (safety net)
-    ordered_groups += [g for g in groups_in_data if g not in ordered_groups]
-
     group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__CLEAR__":"Clear","__WAREHOUSE__":"Warehouse","__BLANK__":"Blanks","__MISC__":"Miscellaneous"}
 
     def make_table(title, df, color_index):
@@ -368,6 +359,7 @@ if run_clicked:
 
     # Build and provide download
     pdf_buf = build_pdf(filtered, present_headers)
+
     PAGE_ORDER = [
         "Engineer Grade Reflective",
         "High Intensity Grade Reflective",
@@ -380,6 +372,16 @@ if run_clicked:
         "__BLANKS__",
         "__MISC__",
     ]
+
+        # Groups that actually exist in the data
+    groups_in_data = display_df["Group"].unique().tolist() # type: ignore
+
+    # Keep only groups that exist, in the order you defined
+    ordered_groups = [g for g in PAGE_ORDER if g in groups_in_data]
+
+    # Append any unexpected groups (safety net)
+    ordered_groups += [g for g in groups_in_data if g not in ordered_groups]
+
     st.success("Done! Download your PDF below.")
     st.download_button(
         "Download Order Nest PDF",
