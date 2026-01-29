@@ -12,16 +12,14 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
-st.set_page_config(
-    page_title="Order Nest",
-    page_icon="assets/favicon.png",  # or .ico
-    layout="centered"
-)
-
 today_str = datetime.now().strftime("%m-%d-%Y")
 output_filename = f"Order Nest - {today_str}.pdf"
 
-st.set_page_config(page_title="Order Nest", page_icon="🪺", layout="centered")
+st.set_page_config(
+    page_title="Order Nest",
+    page_icon="assets/favicon.png",
+    layout="centered"
+)
 
 st.title("Order Nest – PDF Generator")
 st.caption("Upload Sales Order + Production Plan CSVs, apply your rules, and download a styled PDF.")
