@@ -175,7 +175,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     styles.add(ParagraphStyle(name="TitleBig", fontSize=36, leading=42, alignment=1, spaceAfter=12))
     styles.add(ParagraphStyle(name="Subtle", fontSize=12, leading=14, alignment=1, textColor=colors.HexColor("#555555"), spaceAfter=6))
     styles.add(ParagraphStyle(name="Cell", fontSize=7, leading=9))
-    styles.add(ParagraphStyle(name="Header", fontSize=8, leading=10, textColor=colors.white))
+    styles.add(ParagraphStyle(name="Header", fontSize=9, leading=11, textColor=colors.white))
 
     elements = []
     elements.append(Spacer(1, 2*inch))
@@ -187,13 +187,13 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     def header_color(i): return colors.HexColor(vibrant[i % len(vibrant)])
 
     default_widths = {
-        "Sales Order": 0.9*inch,
-        "Quote Number": 0.9*inch,
+        "Sales Order": 1*inch,
+        "Quote Number": 1*inch,
         "Client": 1.2*inch,
         "Item": 1.9*inch,
         "Info": 1.9*inch,
-        "Quantity": 0.7*inch,
-        "Due Date": 0.7*inch,
+        "Quantity": 0.6*inch,
+        "Due Date": 0.6*inch,
     }
     col_widths = [default_widths.get(h, 0.9*inch) for h in present_headers]
     total_w = sum(col_widths)
