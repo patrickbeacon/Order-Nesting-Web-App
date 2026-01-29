@@ -1,11 +1,7 @@
-
 import io
 import re
 from datetime import datetime
 
-import streamlit as st
-import pathlib
-import os
 import pandas as pd
 import streamlit as st
 from reportlab.lib.pagesizes import letter
@@ -16,20 +12,7 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
-today_str = datetime.now().strftime("%m-%d-%Y")
-output_filename = f"Order Nest - {today_str}.pdf"
-
-st.set_page_config(
-    page_title="Beacon Lite Order Nest",
-    page_icon="assets/favicon.png",
-    layout="centered",
-)
-
-# Inject your custom CSS
-st.markdown(
-    pathlib.Path("assets/branding.css").read_text(),
-    unsafe_allow_html=True
-)
+st.set_page_config(page_title="Order Nest", page_icon="🪺", layout="centered")
 
 st.title("Order Nest – PDF Generator")
 st.caption("Upload Sales Order + Production Plan CSVs, apply your rules, and download a styled PDF.")
@@ -78,7 +61,7 @@ with col1:
         sales_key_col = None
 
 with col2:
-    st.subheader("Production Plan settings")
+    st.subheader("Beaconlite settings")
     graphics_selector = None
     if beacon_df is not None:
         beacon_cols = list(beacon_df.columns)
@@ -90,10 +73,9 @@ with col2:
             graphics_by_name = st.selectbox("Pick column by name", options=beacon_cols, index=min(9, len(beacon_cols)-1))
             graphics_selector = graphics_by_name
     else:
-        st.info("Upload a Production Plan CSV to choose the graphics-completed column.")
+        st.info("Upload a Beaconlite CSV to choose the graphics-completed column.")
 
 st.divider()
-
 
 def is_blank(val):
     if pd.isna(val):
@@ -108,12 +90,10 @@ def extract_text_fields(row):
     return " || ".join(parts).upper()
 
 GRADE_PATTERNS = [
-    ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY|HIP"),
-    ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|GD|XI"),
+    ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY"),
+    ("DIAMOND GRADE REFLECTIVE", r"DIAMOND\s*GRADE"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
-    ("Flat Wrap", r"FLAT\s*WRAP"),
-    ("Black Vinyl", r"TEMPORARY\s*STREET\s*SIGN"),
 ]
 
 def find_group(row):
@@ -122,37 +102,21 @@ def find_group(row):
         return "__ROLL_UP__"
     if "LEXAN" in text:
         return "__LEXAN__"
-    if "GUIDEWAYS" in text:
-        return "Kiewit Guideway"
-    if "SIGN BLANK" in text:
-        return "Blanks"
-    if "STEEL STRAP" in text:
-        return "Warehouse"
-    if "BRACKET" in text:
-        return "Warehouse"
-    if "FREIGHT" in text:
-        return "Additional Charges"
-    if "DESIGN FEE" in text:
-        return "Additional Charges"
-    if "COROPLAST" in text:
-        return "Generic Vinyl"
-    if "VINYL DECALS" in text:
-        return "Black Vinyl"
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
             return label
     return "__MISC__"
 
+
 COLOR_ORDER = ["White","Yellow","Orange","Red","Green","Blue","Brown","Black","Unspecified"]
 
 def extract_color(row):
     item = str(row.get("Item", "")).strip().upper()
-
-    if item.startswith("TC"):
+    # Rule: Item starting with TC- is Orange
+    if item.startswith("TC-"):
         return "Orange"
-    
-    text = extract_text_fields(row)  # includes Item/Info/etc in uppercase
 
+    text = extract_text_fields(row)
     patterns = {
         "White":  r"\bWHITE\b|\bWHT\b",
         "Yellow": r"\bYELLOW\b|\bYEL\b",
@@ -163,18 +127,10 @@ def extract_color(row):
         "Brown":  r"\bBROWN\b",
         "Black":  r"\bBLACK\b|\bBLK\b",
     }
-    
     for name, pat in patterns.items():
         if re.search(pat, text, flags=re.I):
             return name
-
     return "Unspecified"
-
-EXCLUDED_PAGES = {
-    "Warehouse",
-    "Additional Charges",
-    "Blanks",
-}
 
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
@@ -209,31 +165,20 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     elements.append(Paragraph(datetime.now().strftime("%B %d, %Y"), styles["Subtle"]))
     elements.append(PageBreak())
 
-    vibrant = ["#2369FF","#008A7F","#DB0808","#7C3AED","#EA580C","#00A6FF","#D946EF","#15AF4D"]
+    vibrant = ["#2563EB","#059669","#DC2626","#7C3AED","#EA580C","#0EA5E9","#D946EF","#16A34A"]
     def header_color(i): return colors.HexColor(vibrant[i % len(vibrant)])
 
     default_widths = {
         "Sales Order": 0.9*inch,
-        "Quote Number": 1.1*inch,
+        "Quote Number": 0.9*inch,
         "Client": 1.2*inch,
-        "Item": 1.3*inch,
-        "Info": 1.8*inch,
+        "Item": 1.9*inch,
+        "Info": 1.9*inch,
         "Quantity": 0.7*inch,
         "Due Date": 0.7*inch,
-        "Stock": 0.5*inch,
     }
     col_widths = [default_widths.get(h, 0.9*inch) for h in present_headers]
     total_w = sum(col_widths)
-
-    group_labels = {
-        "__ROLL_UP__": "Roll Up",
-        "__LEXAN__": "Lexan",
-        "__MISC__": "Miscellaneous",
-        "DIAMOND GRADE REFLECTIVE": "Diamond Grade Reflective",
-        "High Intensity Grade Reflective": "High Intensity Grade Reflective",
-        "Engineer Grade Reflective": "Engineer Grade Reflective",
-        "Generic Vinyl": "Generic Vinyl",
-    }
 
     def sort_key(row):
         d = row.get("Due Date", "")
@@ -252,76 +197,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     if "__MISC__" in ordered_groups:
         ordered_groups = [g for g in ordered_groups if g != "__MISC__"] + ["__MISC__"]
 
-    for g in ordered_groups:
-        df = display_df[display_df["Group"] == g]
-        if df.empty:
-            continue
-
-        title = group_labels.get(g, g)
-
-        if g == "DIAMOND GRADE REFLECTIVE":
-            colors_present = df["Color"].dropna().unique().tolist()
-            COLOR_ORDER = ["White","Yellow","Orange","Red","Green","Blue","Brown","Black","Unspecified"]
-            ordered_colors = (
-                [c for c in COLOR_ORDER if c in colors_present]
-                + [c for c in colors_present if c not in COLOR_ORDER]
-            )
-
-            for c in ordered_colors:
-                sub = df[df["Color"] == c]
-                if sub.empty:
-                    continue
-                elements.extend(make_table(f"{title} — {c}", sub, color_idx))
-
-            elements.append(PageBreak())
-            color_idx += 1
-            continue
-
-    ordered_groups = list(display_df["Group"].unique())
-
-    PAGE_PRIORITY = [
-        "Engineer Grade Reflective",
-        "High Intensity Grade Reflective",
-        "Diamond Grade Reflective",
-        "Generic Vinyl",
-        "Black Vinyl",
-        "Flat Wrap",
-        "__ROLL_UP__",
-        "__LEXAN__",
-        "__MISC__",
-        "Blanks",
-        "Freight",
-        "Warehouse",
-        "Additional Charges",
-    ]
-    
-    def parse_due(d):
-        try:
-            return datetime.strptime(d, "%m/%d/%y")
-        except Exception:
-            return datetime.max
-
-    # earliest due date per group (used as a secondary sort)
-    group_min_due = {}
-    for g, df in display_df.groupby("Group"):
-        if "Due Date" in df.columns and not df.empty:
-            group_min_due[g] = df["Due Date"].apply(parse_due).min()
-        else:
-            group_min_due[g] = datetime.max
-
-    priority_rank = {g: i for i, g in enumerate(PAGE_PRIORITY)}
-
-    def group_sort_key(g):
-        # primary: priority rank (lower = earlier)
-        # secondary: earliest due date within that group
-        # tertiary: group name (stable)
-        return (
-            priority_rank.get(g, 999),
-            group_min_due.get(g, datetime.max),
-            str(g)
-        )
-
-    ordered_groups = sorted(display_df["Group"].unique(), key=group_sort_key)
+    group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__MISC__":"Miscellaneous"}
 
     def make_table(title, df, color_index):
         df = df.copy()
@@ -352,7 +228,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         tbl.setStyle(ts)
 
         title_par = Paragraph(f"<para align='left'><b>{title}</b></para>",
-                              ParagraphStyle(name="GroupTitle", fontSize=15, leading=19, textColor=colors.white, alignment=TA_LEFT))
+                              ParagraphStyle(name="GroupTitle", fontSize=12, leading=14, textColor=colors.white, alignment=TA_LEFT))
         title_bar = Table([[title_par]], colWidths=[total_w], hAlign="CENTER")
         title_bar.setStyle(TableStyle([
             ("BACKGROUND", (0,0), (-1,-1), header_color(color_index)),
@@ -365,19 +241,16 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         return [title_bar, Spacer(1, 0.1*inch), tbl]
 
     elements = elements  # keep linter happy
-
     color_idx = 0
     for g in ordered_groups:
         df = display_df[display_df["Group"] == g]
         if df.empty:
             continue
-
         title = group_labels.get(g, g)
 
-        # ✅ Special: Diamond Grade gets sub-tables by Color
-        if g == "DIAMOND GRADE REFLECTIVE":
-            colors_present = df["Color"].dropna().unique().tolist()
-
+        # Diamond Grade: split into color sub-tables (based on Item/Info)
+        if g == "DIAMOND GRADE REFLECTIVE" and "Color" in df.columns:
+            colors_present = [c for c in df["Color"].dropna().unique().tolist() if str(c).strip() != ""]
             ordered_colors = [c for c in COLOR_ORDER if c in colors_present]
             ordered_colors += [c for c in colors_present if c not in ordered_colors]
 
@@ -385,17 +258,16 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
                 sub = df[df["Color"] == c]
                 if sub.empty:
                     continue
-
                 tbl_parts = make_table(f"{title} — {c}", sub, color_idx)
                 for part in tbl_parts:
                     elements.append(part)
-                elements.append(Spacer(1, 0.15 * inch))
+                elements.append(Spacer(1, 0.15*inch))
 
             elements.append(PageBreak())
             color_idx += 1
             continue
 
-        # ✅ Normal groups
+        # Normal groups
         tbl_parts = make_table(title, df, color_idx)
         for part in tbl_parts:
             elements.append(part)
@@ -434,10 +306,6 @@ if run_clicked:
 
     merged = sales.merge(beacon[["__SO_KEY__", graphics_col]], on="__SO_KEY__", how="inner")
 
-    filtered = merged[merged[graphics_col].apply(is_blank)].copy()
-
-    filtered = filtered[~filtered.apply(lambda row: row.astype(str).str.contains("Wood Post", case=False, na=False)).any(axis=1)]
-
     # Filter out completed
     keep = merged[graphics_col].apply(lambda v: pd.isna(v) or str(v).strip() == "")
     filtered = merged[keep].copy()
@@ -447,9 +315,8 @@ if run_clicked:
     filtered["Color"] = filtered.apply(extract_color, axis=1)
 
     # Prepare display columns
-    preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date","Stock"]
+    preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date"]
     filtered = filtered.rename(columns={sales_key_col: "Sales Order"})
-    filtered["Stock"] = ""
     present_headers = [h for h in preferred_headers if h in filtered.columns]
 
     for col in present_headers:
@@ -461,9 +328,4 @@ if run_clicked:
     # Build and provide download
     pdf_buf = build_pdf(filtered, present_headers)
     st.success("Done! Download your PDF below.")
-    st.download_button(
-    "Download Order Nest PDF",
-    data=pdf_buf,
-    file_name=output_filename,
-    mime="application/pdf"
-)
+    st.download_button("Download Order Nest PDF", data=pdf_buf, file_name="Order_Nest_Today.pdf", mime="application/pdf")
