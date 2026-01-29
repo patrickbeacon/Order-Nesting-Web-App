@@ -98,7 +98,7 @@ def extract_text_fields(row):
 
 GRADE_PATTERNS = [
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY"),
-    ("DIAMOND GRADE REFLECTIVE", r"DIAMOND\s*GRADE"),
+    ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|Type\s*XI|Type\s*IX"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
 ]
@@ -264,7 +264,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         title = group_labels.get(g, g)
 
         # Diamond Grade: split into color sub-tables (based on Item/Info)
-        if g == "DIAMOND GRADE REFLECTIVE" and "Color" in df.columns:
+        if g == "Diamond Grade Reflective" and "Color" in df.columns:
             colors_present = [c for c in df["Color"].dropna().unique().tolist() if str(c).strip() != ""]
             ordered_colors = [c for c in COLOR_ORDER if c in colors_present]
             ordered_colors += [c for c in colors_present if c not in ordered_colors]
