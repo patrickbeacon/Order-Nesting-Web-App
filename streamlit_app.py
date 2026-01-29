@@ -82,6 +82,14 @@ with col2:
     else:
         st.info("Upload a Beaconlite CSV to choose the graphics-completed column.")
 
+filtered = filter[
+    ~filtered["Item"].astype(str).str.contains( # type: ignore
+        "DESIGN FEE|Freight|INSTALLATION",
+        case=False,
+        na=False
+    )
+]
+
 st.divider()
 
 def is_blank(val):
@@ -127,7 +135,15 @@ def extract_color(row):
     # Rule: Item starting with TC- is Orange
     if item.startswith("TC-"):
         return "Orange"
-    if item.startswith("WC-"):
+    if item.startswith("WC-1"):
+        return "Chartreuse"
+    if item.startswith("WC-2"):
+        return "Chartreuse"
+    if item.startswith("WC-2A"):
+        return "Chartreuse"
+    if item.startswith("WC-2AT"):
+        return "Chartreuse"
+    if item.startswith("WC-2T"):
         return "Chartreuse"
 
     text = extract_text_fields(row)
@@ -136,16 +152,11 @@ def extract_color(row):
         "Yellow": r"\bYELLOW\b|\bYEL\b",
         "Chartreuse": r"\bCHARTREUSE\b|\bCHAR\b",
         "Orange": r"\bORANGE\b|\bORG\b",
-        "Red":    r"\bRED\b",
-        "Green":  r"\bGREEN\b",
-        "Blue":   r"\bBLUE\b",
-        "Brown":  r"\bBROWN\b",
-        "Black":  r"\bBLACK\b|\bBLK\b",
     }
     for name, pat in patterns.items():
         if re.search(pat, text, flags=re.I):
             return name
-    return "White"
+    return "White/Yellow"
 
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
