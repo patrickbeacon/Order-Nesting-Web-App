@@ -108,12 +108,33 @@ def find_group(row):
     text = extract_text_fields(row)
     if "ROLL UP" in text:
         return "__ROLL_UP__"
+    
     if "LEXAN" in text:
         return "__LEXAN__"
     if "1/8" in text:
         return "__LEXAN__"
     if "1/16" in text:
         return "__LEXAN__"
+    
+    if "Blank" in text:
+        return "__BLANK__"
+    
+    if "Barrel" in text:
+        return "__WAREHOUSE__"
+    if "Weight" in text:
+        return "__WAREHOUSE__"
+    if "Cone" in text:
+        return "__WAREHOUSE__"
+    if "Bracket" in text:
+        return "__WAREHOUSE__"
+    if "U-Channel" in text:
+        return "__WAREHOUSE__"
+    if "Base" in text:
+        return "__WAREHOUSE__"
+    if "Delineator" in text:
+        return "__WAREHOUSE__"
+    if "Wood" in text:
+        return "__WAREHOUSE__"
     
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
@@ -216,7 +237,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     if "__MISC__" in ordered_groups:
         ordered_groups = [g for g in ordered_groups if g != "__MISC__"] + ["__MISC__"]
 
-    group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__CLEAR__":"Clear","__MISC__":"Miscellaneous"}
+    group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__CLEAR__":"Clear","__WAREHOUSE__":"Warehouse","__BLANK__":"Blanks","__MISC__":"Miscellaneous"}
 
     def make_table(title, df, color_index):
         df = df.copy()
