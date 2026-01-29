@@ -273,8 +273,6 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
             color_idx += 1
             continue
 
-    group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__MISC__":"Miscellaneous"}
-
     ordered_groups = list(display_df["Group"].unique())
 
     PAGE_PRIORITY = [
