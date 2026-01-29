@@ -98,7 +98,7 @@ def extract_text_fields(row):
 
 GRADE_PATTERNS = [
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY"),
-    ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|Type\s*XI|Type\s*IX"),
+    ("IAMOND GRADE REFLECTIVE", r"DIAMOND\s*GRADE"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
 ]
