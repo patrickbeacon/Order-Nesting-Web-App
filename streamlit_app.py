@@ -126,6 +126,19 @@ def find_group(row):
     return "__MISC__"
 
 
+PAGE_ORDER = [
+    "Engineer Grade Reflective",
+    "High Intensity Grade Reflective",
+    "Diamond Grade Reflective",
+    "Generic Vinyl",
+    "Clear",
+    "__ROLL_UP__",
+    "__LEXAN__",
+    "Warehouse",
+    "__BLANKS__",
+   "__MISC__",
+]
+
 COLOR_ORDER = ["White","Yellow","Orange","Red","Green","Blue","Brown","Black","Unspecified"]
 
 def extract_color(row):
@@ -217,7 +230,13 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
             group_min[g] = datetime.max
         else:
             group_min[g] = min([sort_key(r) for r in df.to_dict("records")] or [datetime.max])
-    ordered_groups = sorted(group_min.keys(), key=lambda g: group_min[g])
+    groups_in_data = display_df["Group"].unique().tolist()
+
+    # Keep only groups that exist, in the order you defined
+    ordered_groups = [g for g in PAGE_ORDER if g in groups_in_data]
+
+    # Append any unexpected groups (safety net)
+    ordered_groups += [g for g in groups_in_data if g not in ordered_groups]
     if "__MISC__" in ordered_groups:
         ordered_groups = [g for g in ordered_groups if g != "__MISC__"] + ["__MISC__"]
 
@@ -359,19 +378,6 @@ if run_clicked:
 
     # Build and provide download
     pdf_buf = build_pdf(filtered, present_headers)
-
-    PAGE_ORDER = [
-        "Engineer Grade Reflective",
-        "High Intensity Grade Reflective",
-        "Diamond Grade Reflective",
-        "Generic Vinyl",
-        "Clear",
-        "__ROLL_UP__",
-        "__LEXAN__",
-        "Warehouse",
-        "__BLANKS__",
-        "__MISC__",
-    ]
 
     st.success("Done! Download your PDF below.")
     st.download_button(
