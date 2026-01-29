@@ -107,29 +107,6 @@ def extract_text_fields(row):
             parts.append(str(row[col]))
     return " || ".join(parts).upper()
 
-def extract_color(row):
-    item = str(row.get("Item", "")).strip().upper()
-    text = extract_text_fields(row)  # includes Item/Info/etc in uppercase
-
-    if item.startswith("TC-"):
-        return "Orange"
-
-    patterns = {
-        "White":  r"\bWHITE\b|\bWHT\b",
-        "Yellow": r"\bYELLOW\b|\bYEL\b",
-        "Orange": r"\bORANGE\b|\bORG\b",
-        "Red":    r"\bRED\b",
-        "Green":  r"\bGREEN\b",
-        "Blue":   r"\bBLUE\b",
-        "Brown":  r"\bBROWN\b",
-        "Black":  r"\bBLACK\b|\bBLK\b",
-    }
-    for name, pat in patterns.items():
-        if re.search(pat, text, flags=re.I):
-            return name
-
-    return "Unspecified"
-
 GRADE_PATTERNS = [
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY|HIP"),
     ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|GD|XI"),
@@ -165,6 +142,33 @@ def find_group(row):
         if re.search(pat, text, flags=re.I):
             return label
     return "__MISC__"
+
+COLOR_ORDER = ["White","Yellow","Orange","Red","Green","Blue","Brown","Black","Unspecified"]
+
+def extract_color(row):
+    item = str(row.get("Item", "")).strip().upper()
+
+    if item.startswith("TC-"):
+        return "Orange"
+    
+    text = extract_text_fields(row)  # includes Item/Info/etc in uppercase
+
+    patterns = {
+        "White":  r"\bWHITE\b|\bWHT\b",
+        "Yellow": r"\bYELLOW\b|\bYEL\b",
+        "Orange": r"\bORANGE\b|\bORG\b",
+        "Red":    r"\bRED\b",
+        "Green":  r"\bGREEN\b",
+        "Blue":   r"\bBLUE\b",
+        "Brown":  r"\bBROWN\b",
+        "Black":  r"\bBLACK\b|\bBLK\b",
+    }
+    
+    for name, pat in patterns.items():
+        if re.search(pat, text, flags=re.I):
+            return name
+
+    return "Unspecified"
 
 EXCLUDED_PAGES = {
     "Warehouse",
@@ -361,12 +365,37 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
         return [title_bar, Spacer(1, 0.1*inch), tbl]
 
     elements = elements  # keep linter happy
+
     color_idx = 0
     for g in ordered_groups:
         df = display_df[display_df["Group"] == g]
         if df.empty:
             continue
+
         title = group_labels.get(g, g)
+
+        # ✅ Special: Diamond Grade gets sub-tables by Color
+        if g == "DIAMOND GRADE REFLECTIVE":
+            colors_present = df["Color"].dropna().unique().tolist()
+
+            ordered_colors = [c for c in COLOR_ORDER if c in colors_present]
+            ordered_colors += [c for c in colors_present if c not in ordered_colors]
+
+            for c in ordered_colors:
+                sub = df[df["Color"] == c]
+                if sub.empty:
+                    continue
+
+                tbl_parts = make_table(f"{title} — {c}", sub, color_idx)
+                for part in tbl_parts:
+                    elements.append(part)
+                elements.append(Spacer(1, 0.15 * inch))
+
+            elements.append(PageBreak())
+            color_idx += 1
+            continue
+
+        # ✅ Normal groups
         tbl_parts = make_table(title, df, color_idx)
         for part in tbl_parts:
             elements.append(part)
