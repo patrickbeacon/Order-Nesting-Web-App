@@ -101,6 +101,7 @@ GRADE_PATTERNS = [
     ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|Type\s*XI|Type\s*IX"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
+    ("Clear", r"STICKER\s*-\s*TC-54|STICKER\s*-\s*TC-51B|STICKER\s*-\s*TC-51C"),
 ]
 
 def find_group(row):
@@ -113,12 +114,6 @@ def find_group(row):
         return "__LEXAN__"
     if "1/16" in text:
         return "__LEXAN__"
-    if "Sticker - TC-54" in text:
-        return "__CLEAR__"
-    if "Sticker - TC-51B" in text:
-        return "__CLEAR__"
-    if "Sticker - TC-51C" in text:
-        return "__CLEAR__"
     
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
