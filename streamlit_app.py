@@ -109,7 +109,8 @@ def extract_text_fields(row):
 
 GRADE_PATTERNS = [
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY|HIP"),
-    ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|GD|XI"),
+    ("Diamond Grade White", r"DIAMOND\s*GRADE|GD|XI"),
+    ("Diamond Grade Orange", r"TC-"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
     ("Flat Wrap", r"FLAT\s*WRAP"),
@@ -222,7 +223,9 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     PAGE_PRIORITY = [
         "Engineer Grade Reflective",
         "High Intensity Grade Reflective",
-        "Diamond Grade Reflective",
+        "Diamond Grade White",
+        "Diamond Grade Orange",
+        "Diamond Grade Chartreuse",
         "Generic Vinyl",
         "Black Vinyl",
         "Flat Wrap",
