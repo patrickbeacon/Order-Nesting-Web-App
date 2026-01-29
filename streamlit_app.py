@@ -115,11 +115,14 @@ def extract_color(row):
     # Rule: Item starting with TC- is Orange
     if item.startswith("TC-"):
         return "Orange"
+    if item.startswith("WC-"):
+        return "Chartreuse"
 
     text = extract_text_fields(row)
     patterns = {
         "White":  r"\bWHITE\b|\bWHT\b",
         "Yellow": r"\bYELLOW\b|\bYEL\b",
+        "Chartreuse": r"\bCHARTREUSE\b|\bCHAR\b",
         "Orange": r"\bORANGE\b|\bORG\b",
         "Red":    r"\bRED\b",
         "Green":  r"\bGREEN\b",
@@ -130,7 +133,7 @@ def extract_color(row):
     for name, pat in patterns.items():
         if re.search(pat, text, flags=re.I):
             return name
-    return "Unspecified"
+    return "White"
 
 def fmt_date(d):
     if pd.isna(d) or str(d).strip()=="" or str(d).strip().lower()=="nan":
