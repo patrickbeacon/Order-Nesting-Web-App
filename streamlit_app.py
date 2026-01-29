@@ -102,6 +102,7 @@ GRADE_PATTERNS = [
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
     ("Clear", r"STICKER\s*-\s*TC-54|STICKER\s*-\s*TC-51B|STICKER\s*-\s*TC-51C"),
+    ("Warehouse", r"BARREL|WEIGHT|CONE|BRACKET|U-CHANNEL|BASE|DELINEATOR|WOOD"),
 ]
 
 def find_group(row):
@@ -118,23 +119,6 @@ def find_group(row):
     
     if "Blank" in text:
         return "__BLANK__"
-    
-    if "Barrel" in text:
-        return "__WAREHOUSE__"
-    if "Weight" in text:
-        return "__WAREHOUSE__"
-    if "Cone" in text:
-        return "__WAREHOUSE__"
-    if "Bracket" in text:
-        return "__WAREHOUSE__"
-    if "U-Channel" in text:
-        return "__WAREHOUSE__"
-    if "Base" in text:
-        return "__WAREHOUSE__"
-    if "Delineator" in text:
-        return "__WAREHOUSE__"
-    if "Wood" in text:
-        return "__WAREHOUSE__"
     
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
