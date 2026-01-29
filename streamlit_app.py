@@ -113,6 +113,12 @@ def find_group(row):
         return "__LEXAN__"
     if "1/16" in text:
         return "__LEXAN__"
+    if "Sticker - TC-54" in text:
+        return "__CLEAR__"
+    if "Sticker - TC-51B" in text:
+        return "__CLEAR__"
+    if "Sticker - TC-51C" in text:
+        return "__CLEAR__"
     
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
@@ -215,7 +221,7 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     if "__MISC__" in ordered_groups:
         ordered_groups = [g for g in ordered_groups if g != "__MISC__"] + ["__MISC__"]
 
-    group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__MISC__":"Miscellaneous"}
+    group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__CLEAR__":"Clear","__MISC__":"Miscellaneous"}
 
     def make_table(title, df, color_index):
         df = df.copy()
