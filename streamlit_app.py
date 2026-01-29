@@ -221,6 +221,16 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     col_widths = [default_widths.get(h, 0.9*inch) for h in present_headers]
     total_w = sum(col_widths)
 
+    group_labels = {
+        "__ROLL_UP__": "Roll Up",
+        "__LEXAN__": "Lexan",
+        "__MISC__": "Miscellaneous",
+        "DIAMOND GRADE REFLECTIVE": "Diamond Grade Reflective",
+        "High Intensity Grade Reflective": "High Intensity Grade Reflective",
+        "Engineer Grade Reflective": "Engineer Grade Reflective",
+        "Generic Vinyl": "Generic Vinyl",
+    }
+
     def sort_key(row):
         d = row.get("Due Date", "")
         try:
