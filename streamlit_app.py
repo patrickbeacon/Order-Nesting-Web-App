@@ -359,6 +359,18 @@ if run_clicked:
 
     # Build and provide download
     pdf_buf = build_pdf(filtered, present_headers)
+    PAGE_ORDER = [
+        "Engineer Grade Reflective",
+        "High Intensity Grade Reflective",
+        "Diamond Grade Reflective",
+        "Generic Vinyl",
+        "Clear",
+        "__ROLL_UP__",
+        "__LEXAN__",
+        "Warehouse",
+        "__BLANKS__",
+        "__MISC__",
+    ]
     st.success("Done! Download your PDF below.")
     st.download_button(
         "Download Order Nest PDF",
