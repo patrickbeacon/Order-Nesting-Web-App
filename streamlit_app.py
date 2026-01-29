@@ -148,7 +148,7 @@ COLOR_ORDER = ["White","Yellow","Orange","Red","Green","Blue","Brown","Black","U
 def extract_color(row):
     item = str(row.get("Item", "")).strip().upper()
 
-    if item.startswith("TC-"):
+    if item.startswith("TC"):
         return "Orange"
     
     text = extract_text_fields(row)  # includes Item/Info/etc in uppercase
