@@ -12,6 +12,15 @@ from reportlab.lib.units import inch
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
+st.set_page_config(
+    page_title="Order Nest",
+    page_icon="assets/favicon.png",  # or .ico
+    layout="centered"
+)
+
+today_str = datetime.now().strftime("%m-%d-%Y")
+output_filename = f"Order Nest - {today_str}.pdf"
+
 st.set_page_config(page_title="Order Nest", page_icon="🪺", layout="centered")
 
 st.title("Order Nest – PDF Generator")
@@ -91,7 +100,7 @@ def extract_text_fields(row):
 
 GRADE_PATTERNS = [
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY"),
-    ("DIAMOND GRADE REFLECTIVE", r"DIAMOND\s*GRADE"),
+    ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|Type\s*XI|Type\s*IX"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
 ]
@@ -102,6 +111,11 @@ def find_group(row):
         return "__ROLL_UP__"
     if "LEXAN" in text:
         return "__LEXAN__"
+    if "1/8" in text:
+        return "__LEXAN__"
+    if "1/16" in text:
+        return "__LEXAN__"
+    
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
             return label
@@ -331,4 +345,9 @@ if run_clicked:
     # Build and provide download
     pdf_buf = build_pdf(filtered, present_headers)
     st.success("Done! Download your PDF below.")
-    st.download_button("Download Order Nest PDF", data=pdf_buf, file_name="Order_Nest_Today.pdf", mime="application/pdf")
+    st.download_button(
+        "Download Order Nest PDF",
+        data=pdf_buf,
+        file_name=output_filename,
+        mime="application/pdf"
+    )
