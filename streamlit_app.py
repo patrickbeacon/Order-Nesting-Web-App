@@ -189,11 +189,11 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     default_widths = {
         "Sales Order": 1*inch,
         "Quote Number": 1*inch,
-        "Client": 1.2*inch,
+        "Client": 1.1*inch,
         "Item": 1.9*inch,
         "Info": 1.9*inch,
         "Quantity": 0.6*inch,
-        "Due Date": 0.6*inch,
+        "Due Date": 0.7*inch,
     }
     col_widths = [default_widths.get(h, 0.9*inch) for h in present_headers]
     total_w = sum(col_widths)
