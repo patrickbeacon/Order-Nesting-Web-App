@@ -103,6 +103,7 @@ GRADE_PATTERNS = [
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
     ("Clear", r"STICKER\s*-\s*TC-54|STICKER\s*-\s*TC-51B|STICKER\s*-\s*TC-51C"),
     ("Warehouse", r"BARREL|WEIGHT|CONE|BRACKET|U-CHANNEL|BASE|DELINEATOR|WOOD"),
+    ("Cut Vinyl", r"TEMPORARY|WB-3"),
 ]
 
 def find_group(row):
@@ -132,6 +133,7 @@ PAGE_ORDER = [
     "Diamond Grade Reflective",
     "Generic Vinyl",
     "Clear",
+    "Cut Vinyl"
     "__ROLL_UP__",
     "__LEXAN__",
     "Warehouse",
