@@ -373,15 +373,6 @@ if run_clicked:
         "__MISC__",
     ]
 
-        # Groups that actually exist in the data
-    groups_in_data = display_df["Group"].unique().tolist() # type: ignore
-
-    # Keep only groups that exist, in the order you defined
-    ordered_groups = [g for g in PAGE_ORDER if g in groups_in_data]
-
-    # Append any unexpected groups (safety net)
-    ordered_groups += [g for g in groups_in_data if g not in ordered_groups]
-
     st.success("Done! Download your PDF below.")
     st.download_button(
         "Download Order Nest PDF",
