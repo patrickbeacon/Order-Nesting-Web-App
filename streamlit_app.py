@@ -107,6 +107,29 @@ def extract_text_fields(row):
             parts.append(str(row[col]))
     return " || ".join(parts).upper()
 
+def extract_color(row):
+    item = str(row.get("Item", "")).strip().upper()
+    text = extract_text_fields(row)  # includes Item/Info/etc in uppercase
+
+    if item.startswith("TC-"):
+        return "Orange"
+
+    patterns = {
+        "White":  r"\bWHITE\b|\bWHT\b",
+        "Yellow": r"\bYELLOW\b|\bYEL\b",
+        "Orange": r"\bORANGE\b|\bORG\b",
+        "Red":    r"\bRED\b",
+        "Green":  r"\bGREEN\b",
+        "Blue":   r"\bBLUE\b",
+        "Brown":  r"\bBROWN\b",
+        "Black":  r"\bBLACK\b|\bBLK\b",
+    }
+    for name, pat in patterns.items():
+        if re.search(pat, text, flags=re.I):
+            return name
+
+    return "Unspecified"
+
 GRADE_PATTERNS = [
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY|HIP"),
     ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|GD|XI"),
@@ -214,6 +237,31 @@ def build_pdf(display_df: pd.DataFrame, present_headers):
     ordered_groups = sorted(group_min.keys(), key=lambda g: group_min[g])
     if "__MISC__" in ordered_groups:
         ordered_groups = [g for g in ordered_groups if g != "__MISC__"] + ["__MISC__"]
+
+    for g in ordered_groups:
+        df = display_df[display_df["Group"] == g]
+        if df.empty:
+            continue
+
+        title = group_labels.get(g, g)
+
+        if g == "DIAMOND GRADE REFLECTIVE":
+            colors_present = df["Color"].dropna().unique().tolist()
+            COLOR_ORDER = ["White","Yellow","Orange","Red","Green","Blue","Brown","Black","Unspecified"]
+            ordered_colors = (
+                [c for c in COLOR_ORDER if c in colors_present]
+                + [c for c in colors_present if c not in COLOR_ORDER]
+            )
+
+            for c in ordered_colors:
+                sub = df[df["Color"] == c]
+                if sub.empty:
+                    continue
+                elements.extend(make_table(f"{title} — {c}", sub, color_idx))
+
+            elements.append(PageBreak())
+            color_idx += 1
+            continue
 
     group_labels = {"__ROLL_UP__":"Roll Up","__LEXAN__":"Lexan","__MISC__":"Miscellaneous"}
 
@@ -359,6 +407,7 @@ if run_clicked:
 
     # Grouping
     filtered["Group"] = filtered.apply(find_group, axis=1)
+    filtered["Color"] = filtered.apply(extract_color, axis=1)
 
     # Prepare display columns
     preferred_headers = ["Sales Order","Quote Number","Client","Item","Info","Quantity","Due Date","Stock"]
