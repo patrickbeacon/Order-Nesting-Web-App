@@ -97,12 +97,13 @@ def extract_text_fields(row):
     return " || ".join(parts).upper()
 
 GRADE_PATTERNS = [
+    ("Lexan", r"Lexan|Polycarbonate"),
     ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY|HIGH|HIP|Type\s*III|Type\s*IV"),
     ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|Type\s*XI|Type\s*IX"),
     ("Engineer Grade Reflective", r"ENGINEER\s*GRADE|Type\s*I"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
     ("Clear", r"STICKER\s*-\s*TC-54|STICKER\s*-\s*TC-51B|STICKER\s*-\s*TC-51C"),
-    ("Warehouse", r"BARREL|WEIGHT|CONE|BRACKET|U-CHANNEL|BASE|DELINEATOR|WOOD"),
+    ("Warehouse", r"BARREL|WEIGHT|CONE|BRACKET|U-CHANNEL|BASE|DELINEATOR|WOOD|RIB|BUCKLE|STRAP|TAPE"),
     ("Cut Vinyl", r"TEMPORARY|WB-3"),
     ("Blanks", r"Blank|Blanks|"),
 ]
@@ -111,11 +112,6 @@ def find_group(row):
     text = extract_text_fields(row)
     if "ROLL UP" in text:
         return "__ROLL_UP__"
-    
-    if "LEXAN" in text:
-        return "__LEXAN__"
-    if "polycarbonate" in text:
-        return "__LEXAN__"
     
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
@@ -131,7 +127,7 @@ PAGE_ORDER = [
     "Clear",
     "Cut Vinyl"
     "__ROLL_UP__",
-    "__LEXAN__",
+    "Lexan",
     "Warehouse",
     "Blanks",
    "__MISC__",
