@@ -34,6 +34,19 @@ with st.expander("How it works"):
 sales_file = st.file_uploader("Sales CSV", type=["csv"], key="sales")
 beacon_file = st.file_uploader("Production Plan CSV", type=["csv"], key="beacon")
 
+def normalize_sales_order(val):
+    if pd.isna(val):
+        return ""
+    s = str(val).strip().upper()
+
+    # Remove known prefixes
+    s = re.sub(r"^(BLSO-|S-)", "", s)
+
+    # Optional: remove spaces
+    s = s.replace(" ", "")
+
+    return s
+
 def load_csv(uploaded):
     if uploaded is None:
         return None
@@ -338,8 +351,8 @@ if run_clicked:
     # Keep beacon rows where first col is non-empty
     beacon = beacon[beacon[beacon_first].apply(lambda x: pd.notna(x) and str(x).strip() != "")].copy()
 
-    sales["__SO_KEY__"] = sales[sales_key_col].astype(str).str.strip().str.upper()
-    beacon["__SO_KEY__"] = beacon[beacon_first].astype(str).str.strip().str.upper()
+    sales["SO_KEY"] = sales[sales_order_col].apply(normalize_sales_order)
+    beacon_data["SO_KEY"] = beacon_data[first_col].apply(normalize_sales_order)
 
     merged = sales.merge(beacon[["__SO_KEY__", graphics_col]], on="__SO_KEY__", how="inner")
 
