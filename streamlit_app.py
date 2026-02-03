@@ -117,8 +117,6 @@ def find_group(row):
     if "polycarbonate" in text:
         return "__LEXAN__"
     
-    if "Blank" in text:
-        return "__BLANK__"
     
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
