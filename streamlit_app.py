@@ -363,6 +363,13 @@ if run_clicked:
     filtered = filtered.rename(columns={sales_key_col: "Sales Order"})
     present_headers = [h for h in preferred_headers if h in filtered.columns]
 
+    filtered = filtered[
+        ~filtered["Item"].astype(str).str.contains(
+            "design fee|freight|installation",
+            case=False,
+            na=False
+        )
+    ]
 
     for col in present_headers:
         if col == "Due Date":
