@@ -104,7 +104,6 @@ GRADE_PATTERNS = [
     ("Clear", r"STICKER\s*-\s*TC-54|STICKER\s*-\s*TC-51B|STICKER\s*-\s*TC-51C"),
     ("Warehouse", r"BARREL|WEIGHT|CONE|BRACKET|U-CHANNEL|BASE|DELINEATOR|WOOD"),
     ("Cut Vinyl", r"TEMPORARY|WB-3"),
-    ("Blanks", r"Blank|Blanks|"),
 ]
 
 def find_group(row):
@@ -114,9 +113,13 @@ def find_group(row):
     
     if "LEXAN" in text:
         return "__LEXAN__"
-    if "polycarbonate" in text:
+    if "1/8" in text:
+        return "__LEXAN__"
+    if "1/16" in text:
         return "__LEXAN__"
     
+    if "Blank" in text:
+        return "__BLANK__"
     
     for label, pat in GRADE_PATTERNS:
         if re.search(pat, text, flags=re.I):
@@ -134,7 +137,7 @@ PAGE_ORDER = [
     "__ROLL_UP__",
     "__LEXAN__",
     "Warehouse",
-    "Blanks",
+    "__BLANKS__",
    "__MISC__",
 ]
 
