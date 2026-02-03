@@ -97,13 +97,14 @@ def extract_text_fields(row):
     return " || ".join(parts).upper()
 
 GRADE_PATTERNS = [
-    ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY"),
+    ("High Intensity Grade Reflective", r"HIGH\s*INTENSITY|HIGH|HIP|Type\s*III|Type\s*IV"),
     ("Diamond Grade Reflective", r"DIAMOND\s*GRADE|Type\s*XI|Type\s*IX"),
-    ("Engineer Grade Reflective", r"ENGINEER\s*GRADE"),
+    ("Engineer Grade Reflective", r"ENGINEER\s*GRADE|Type\s*I"),
     ("Generic Vinyl", r"GENERIC\s*(PRINT)?\s*VINYL|^GENERIC$| GENERIC[^\w]?"),
     ("Clear", r"STICKER\s*-\s*TC-54|STICKER\s*-\s*TC-51B|STICKER\s*-\s*TC-51C"),
     ("Warehouse", r"BARREL|WEIGHT|CONE|BRACKET|U-CHANNEL|BASE|DELINEATOR|WOOD"),
     ("Cut Vinyl", r"TEMPORARY|WB-3"),
+    ("Blanks", r"Blank|Blanks|"),
 ]
 
 def find_group(row):
@@ -113,9 +114,7 @@ def find_group(row):
     
     if "LEXAN" in text:
         return "__LEXAN__"
-    if "1/8" in text:
-        return "__LEXAN__"
-    if "1/16" in text:
+    if "polycarbonate" in text:
         return "__LEXAN__"
     
     if "Blank" in text:
@@ -137,11 +136,11 @@ PAGE_ORDER = [
     "__ROLL_UP__",
     "__LEXAN__",
     "Warehouse",
-    "__BLANKS__",
+    "Blanks",
    "__MISC__",
 ]
 
-COLOR_ORDER = ["White","Yellow","Orange","Red","Green","Blue","Brown","Black","Unspecified"]
+COLOR_ORDER = ["White","Yellow","Orange","Unspecified"]
 
 def extract_color(row):
     item = str(row.get("Item", "")).strip().upper()
